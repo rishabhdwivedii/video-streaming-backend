@@ -23,8 +23,8 @@ app.get("/:videoName", (req, res) => {
   res.sendFile(videoPath, { root: __dirname });
 });
 
-app.listen(3000, () => {
-  console.log("server is running on port 3000");
+app.listen(process.env.PORT || 3000, () => {
+  console.log("server is running");
 });
 
 module.exports = app;
