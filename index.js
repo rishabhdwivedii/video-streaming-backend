@@ -5,7 +5,7 @@ const app = express();
 app.use("/videos", express.static("videos"));
 
 app.get("/", (req, res) => {
-  const videosFolder = "videos";
+  const videosFolder = path.join(__dirname, "videos");
   fs.readdir(videosFolder, (err, files) => {
     if (err) {
       console.error("Error reading video files:", err);
