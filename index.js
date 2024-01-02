@@ -17,7 +17,7 @@ const videosSchema = new mongoose.Schema({
 const Videos = mongoose.model("Videos", videosSchema);
 
 mongoose.connect(
-  "mongodb+srv://rishabh14121999:rishabh@cluster0.y9lndvq.mongodb.net//videos",
+  "mongodb+srv://rishabh14121999:rishabh@cluster0.y9lndvq.mongodb.net/videos",
   { useNewUrlParser: true, useUnifiedTopology: true, dbName: "videos" }
 );
 
