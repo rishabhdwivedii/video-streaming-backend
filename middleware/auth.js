@@ -1,10 +1,10 @@
 const jwt = require("jsonwebtoken");
-const SECRET = "Secret@123";
 const { Users } = require("../db");
+require("dotenv").config();
 
 const generateJwt = (user) => {
   const payload = { username: user.username };
-  return jwt.sign(payload, SECRET, { expiresIn: "1h" });
+  return jwt.sign(payload, process.env.SECRET, { expiresIn: "1h" });
 };
 
 const userAuthentication = async (req, res, next) => {
@@ -23,7 +23,7 @@ const authenticateJwt = (req, res, next) => {
   if (authHeader) {
     const token = authHeader.split(" ")[1];
 
-    jwt.verify(token, SECRET, (err, user) => {
+    jwt.verify(token, process.env.SECRET, (err, user) => {
       if (err) {
         return res.sendStatus(403);
       }
@@ -40,5 +40,4 @@ module.exports = {
   authenticateJwt,
   generateJwt,
   userAuthentication,
-  SECRET,
 };

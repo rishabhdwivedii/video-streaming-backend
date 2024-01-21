@@ -3,7 +3,6 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const { Users, Videos } = require("../db");
 const {
-  SECRET,
   authenticateJwt,
   generateJwt,
   userAuthentication,

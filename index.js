@@ -5,6 +5,7 @@ const path = require("path");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const appRouter = require("./routes/router");
+require("dotenv").config();
 
 const app = express();
 app.use(cors());
@@ -14,10 +15,11 @@ app.use("/", appRouter);
 
 async function startServer() {
   try {
-    await mongoose.connect(
-      "mongodb+srv://rishabh14121999:rishabh@cluster0.c0lkigv.mongodb.net/videos",
-      { useNewUrlParser: true, useUnifiedTopology: true, dbName: "videos" }
-    );
+    await mongoose.connect(process.env.DATABASE_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      dbName: "videos",
+    });
     console.log("Connected to MongoDB successfully");
   } catch (error) {
     console.error("Error connecting to MongoDB:", error.message);
