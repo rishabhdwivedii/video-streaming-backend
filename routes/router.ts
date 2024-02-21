@@ -1,19 +1,25 @@
-const mongoose = require("mongoose");
-const express = require("express");
-const jwt = require("jsonwebtoken");
-const { Users, Videos } = require("../db");
-const {
+import express from "express";
+import { Users, Videos } from "../db";
+import {
   authenticateJwt,
   generateJwt,
   userAuthentication,
-} = require("../middleware/auth");
+} from "../middleware/auth";
 
 const router = express.Router();
 
 router.get("/me", authenticateJwt, async (req, res) => {
-  res.json({
-    username: req.user.username,
-  });
+  if (
+    req.headers.user &&
+    typeof req.headers.user === "object" &&
+    "username" in req.headers.user
+  ) {
+    res.json({
+      username: req.headers.user.username,
+    });
+  } else {
+    res.status(400).json({ error: "Invalid user information in the headers" });
+  }
 });
 
 router.post("/signup", async (req, res) => {
@@ -62,4 +68,4 @@ router.post("/upload", authenticateJwt, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

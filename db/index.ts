@@ -12,10 +12,5 @@ const usersSchema = new mongoose.Schema({
   password: String,
 });
 
-const Users = mongoose.model("Users", usersSchema);
-const Videos = mongoose.model("Videos", videosSchema);
-
-module.exports = {
-  Users,
-  Videos,
-};
+export const Users = mongoose.model("Users", usersSchema);
+export const Videos = mongoose.model("Videos", videosSchema);
