@@ -18,7 +18,13 @@ const cors_1 = __importDefault(require("cors"));
 const router_1 = __importDefault(require("./routes/router"));
 require("dotenv").config();
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: '*',
+}));
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    next();
+});
 app.use(express_1.default.json());
 app.use("/", router_1.default);
 function startServer() {
