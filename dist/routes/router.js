@@ -15,6 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const db_1 = require("../db");
 const auth_1 = require("../middleware/auth");
+const zod_1 = require("zod");
+const signupInput = zod_1.z.object({
+    username: zod_1.z.string().min(1).max(30),
+    password: zod_1.z.string().min(6).max(30),
+});
 const router = express_1.default.Router();
 router.get("/me", auth_1.authenticateJwt, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.headers.user &&
@@ -29,15 +34,26 @@ router.get("/me", auth_1.authenticateJwt, (req, res) => __awaiter(void 0, void 0
     }
 }));
 router.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, password } = req.body;
-    console.log("Received signup request with username:", username);
-    if (yield db_1.Users.findOne({ username })) {
-        res.status(403).send("User already exists.");
+    try {
+        const { username, password } = signupInput.parse(req.body);
+        console.log("Received signup request with username:", username);
+        if (yield db_1.Users.findOne({ username })) {
+            res.status(403).send("User already exists.");
+        }
+        else {
+            yield db_1.Users.create({ username, password });
+            let token = (0, auth_1.generateJwt)({ username, password });
+            res.json({ message: "Admin created successfully", token });
+        }
     }
-    else {
-        yield db_1.Users.create({ username, password });
-        let token = (0, auth_1.generateJwt)({ username, password });
-        res.json({ message: "Admin created successfully", token });
+    catch (error) {
+        if (error instanceof zod_1.z.ZodError) {
+            res.status(400).json({ error: error.errors });
+        }
+        else {
+            console.error("Error during signup:", error);
+            res.status(500).send("Internal Server Error");
+        }
     }
 }));
 router.post("/login", auth_1.userAuthentication, (req, res) => {

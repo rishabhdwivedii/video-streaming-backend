@@ -5,6 +5,14 @@ import {
   generateJwt,
   userAuthentication,
 } from "../middleware/auth";
+import { z } from "zod";
+
+const signupInput = z.object({
+  username: z.string().min(1).max(30),
+  password: z.string().min(6).max(30),
+});
+
+// type signupParams = z.infer<typeof signupInput>; zod inference
 
 const router = express.Router();
 
@@ -23,14 +31,23 @@ router.get("/me", authenticateJwt, async (req, res) => {
 });
 
 router.post("/signup", async (req, res) => {
-  const { username, password } = req.body;
-  console.log("Received signup request with username:", username);
-  if (await Users.findOne({ username })) {
-    res.status(403).send("User already exists.");
-  } else {
-    await Users.create({ username, password });
-    let token = generateJwt({ username, password });
-    res.json({ message: "Admin created successfully", token });
+  try {
+    const { username, password } = signupInput.parse(req.body);
+    console.log("Received signup request with username:", username);
+    if (await Users.findOne({ username })) {
+      res.status(403).send("User already exists.");
+    } else {
+      await Users.create({ username, password });
+      let token = generateJwt({ username, password });
+      res.json({ message: "Admin created successfully", token });
+    }
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: error.errors });
+    } else {
+      console.error("Error during signup:", error);
+      res.status(500).send("Internal Server Error");
+    }
   }
 });
 
