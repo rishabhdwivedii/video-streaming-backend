@@ -7,14 +7,9 @@ require("dotenv").config();
 const app = express();
 app.use(
   cors({
-    origin: '*',
+    origin: "https://video-streaming-frontend-rho.vercel.app",
   })
 );
-
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  next();
-});
 
 app.use(express.json());
 
