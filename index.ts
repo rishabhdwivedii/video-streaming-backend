@@ -12,6 +12,7 @@ app.use(
 );
 
 app.use(express.json());
+app.options('*', cors());
 
 app.use("/", appRouter);
 
